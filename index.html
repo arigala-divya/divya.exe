@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arigala Divya Sreenidhi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:      #080810;
+      --bg2:     #0d0d1a;
+      --bg3:     #131325;
+      --purple:  #8b5cf6;
+      --purple2: #6d28d9;
+      --purple3: #a78bfa;
+      --pink:    #ec4899;
+      --pink2:   #f472b6;
+      --text:    #f0eeff;
+      --muted:   #7c7c96;
+      --border:  rgba(139,92,246,0.18);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Canvas ── */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; width: 100%;
+      z-index: 100;
+      padding: 1.2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(8,8,16,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Fira Code', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--purple3);
+    }
+    .nav-logo .pk { color: var(--pink); }
+
+    nav ul { list-style:none; display:flex; gap:2.5rem; }
+    nav ul li a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.3s;
+    }
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      transition: width 0.3s;
+      border-radius: 2px;
+    }
+    nav ul li a:hover { color: var(--text); }
+    nav ul li a:hover::after { width: 100%; }
+
+    /* ── Sections ── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 7rem 10%;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 5rem;
+    }
+
+    .hero-tag {
+      font-family: 'Fira Code', monospace;
+      color: var(--purple3);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      background: linear-gradient(130deg, #fff 20%, var(--purple3) 55%, var(--pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.4s forwards;
+    }
+
+    .hero-typed {
+      margin-top: 1.2rem;
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 0.7s 0.6s forwards;
+    }
+    .hero-typed .txt { color: var(--purple3); }
+    .hero-typed .cur {
+      display: inline-block;
+      width: 2px; height: 1em;
+      background: var(--pink);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    .hero-desc {
+      margin-top: 1.6rem;
+      max-width: 580px;
+      color: var(--muted);
+      line-height: 1.85;
+      font-size: 0.97rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.8s forwards;
+    }
+    .hero-desc em { color: var(--purple3); font-style: normal; font-weight: 600; }
+
+    .hero-btns {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s 1s forwards;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple2), var(--purple));
+      color: #fff;
+      border: none;
+      box-shadow: 0 0 22px rgba(139,92,246,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 36px rgba(139,92,246,0.55);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--purple3);
+      border: 1px solid var(--purple);
+    }
+    .btn-outline:hover {
+      background: rgba(139,92,246,0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 0 22px rgba(139,92,246,0.18);
+    }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-family: 'Fira Code', monospace;
+      color: var(--pink);
+      font-size: 0.82rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.9rem, 4vw, 2.9rem);
+      font-weight: 700;
+      margin-bottom: 3rem;
+      background: linear-gradient(130deg, var(--text) 55%, var(--purple3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── About ── */
+    #about {
+      background: linear-gradient(180deg, transparent, rgba(139,92,246,0.04), transparent);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .about-text p {
+      color: var(--muted);
+      line-height: 1.9;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .about-text p em { color: var(--purple3); font-style: normal; font-weight: 600; }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+    }
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      transition: all 0.35s;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .stat-card:hover { border-color: var(--purple); transform: translateY(-5px); box-shadow: 0 12px 30px rgba(139,92,246,0.15); }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--purple3), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── Experience timeline ── */
+    .timeline { position: relative; padding-left: 1.5rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0.5rem; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--purple), var(--pink), transparent);
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+      padding-left: 2.2rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.15rem; top: 0.45rem;
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: var(--purple);
+      box-shadow: 0 0 14px rgba(139,92,246,0.8);
+      border: 2px solid var(--bg);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .timeline-item:hover::before {
+      background: var(--pink);
+      box-shadow: 0 0 14px rgba(236,72,153,0.8);
+    }
+
+    .timeline-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1.8rem;
+      transition: all 0.3s;
+    }
+    .timeline-item:hover .timeline-card {
+      border-color: rgba(139,92,246,0.4);
+      transform: translateX(5px);
+      box-shadow: 0 8px 28px rgba(139,92,246,0.1);
+    }
+
+    .tl-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+    .tl-role { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .tl-company { color: var(--purple3); font-size: 0.88rem; font-weight: 500; margin-top: 0.1rem; }
+    .tl-date {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--pink);
+      background: rgba(236,72,153,0.1);
+      padding: 0.2rem 0.75rem;
+      border-radius: 20px;
+      border: 1px solid rgba(236,72,153,0.25);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tl-bullets { list-style: none; margin-top: 0.9rem; }
+    .tl-bullets li {
+      color: var(--muted);
+      font-size: 0.87rem;
+      line-height: 1.75;
+      padding-left: 1.2rem;
+      position: relative;
+      margin-bottom: 0.35rem;
+    }
+    .tl-bullets li::before { content: '▸'; position: absolute; left: 0; color: var(--purple3); }
+
+    /* ── Projects ── */
+    #projects { background: linear-gradient(180deg, transparent, rgba(139,92,246,0.03), transparent); }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 2rem;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(236,72,153,0.06));
+      opacity: 0;
+      transition: opacity 0.4s;
+      border-radius: 18px;
+    }
+    .project-card:hover {
+      border-color: rgba(139,92,246,0.5);
+      transform: translateY(-7px);
+      box-shadow: 0 24px 48px rgba(139,92,246,0.14);
+    }
+    .project-card:hover::after { opacity: 1; }
+
+    .project-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+    .project-name { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+    .project-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      padding: 0.15rem 0.6rem;
+      border-radius: 20px;
+      background: rgba(236,72,153,0.12);
+      color: var(--pink2);
+      border: 1px solid rgba(236,72,153,0.3);
+      margin-bottom: 0.8rem;
+      font-family: 'Fira Code', monospace;
+      letter-spacing: 0.5px;
+    }
+    .project-desc { color: var(--muted); font-size: 0.87rem; line-height: 1.75; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.2rem; }
+    .tag {
+      font-size: 0.73rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+      background: rgba(139,92,246,0.1);
+      color: var(--purple3);
+      border: 1px solid rgba(139,92,246,0.2);
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2.5rem;
+    }
+    .skills-category h3 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: var(--purple3);
+      font-family: 'Fira Code', monospace;
+      margin-bottom: 1rem;
+    }
+    .skills-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .skill-pill {
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: all 0.3s;
+      cursor: default;
+      user-select: none;
+    }
+    .skill-pill:hover {
+      border-color: var(--purple);
+      background: rgba(139,92,246,0.1);
+      color: var(--purple3);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(139,92,246,0.2);
+    }
+
+    /* ── Achievements ── */
+    #achievements { background: linear-gradient(180deg, transparent, rgba(236,72,153,0.03), transparent); }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.3rem;
+    }
+    .ach-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      transition: all 0.3s;
+    }
+    .ach-card:hover {
+      border-color: rgba(236,72,153,0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(236,72,153,0.1);
+    }
+    .ach-icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .ach-title { font-size: 0.92rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; }
+    .ach-body { color: var(--muted); font-size: 0.85rem; line-height: 1.65; }
+
+    /* ── Contact ── */
+    #contact { text-align: center; }
+    .contact-wrap {
+      max-width: 580px;
+      margin: 0 auto;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 3rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-wrap::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+    }
+    .contact-wrap p {
+      color: var(--muted);
+      margin-bottom: 2rem;
+      line-height: 1.85;
+      font-size: 0.95rem;
+    }
+    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-family: 'Fira Code', monospace;
+      border-top: 1px solid var(--border);
+    }
+    footer span { color: var(--purple3); }
+
+    /* ── Glow divider ── */
+    .glow-line {
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      border-radius: 3px;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 0 14px rgba(139,92,246,0.5);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(28px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    @keyframes blink {
+      0%,100% { opacity:1; }
+      50%      { opacity:0; }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--purple2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--purple); }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      nav ul { display: none; }
+      section { padding: 5rem 6%; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    }
+    @media (max-width: 480px) {
+      section { padding: 4rem 5%; }
+      .hero-btns { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-logo"><span class="pk">&lt;</span>divya<span class="pk">.exe</span> /&gt;</div>
+  <ul>
+    <li><a href="#about">about</a></li>
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#achievements">achievements</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── Hero ── -->
+<section id="hero">
+  <p class="hero-tag">// hello world, I'm</p>
+  <h1 class="hero-name">Arigala Divya<br/>Sreenidhi</h1>
+  <p class="hero-typed">&gt;&nbsp;<span class="txt"></span><span class="cur"></span></p>
+  <p class="hero-desc">
+    CS undergrad with strong foundations in <em>Data Structures</em>, <em>Machine Learning</em>, and <em>AI systems</em>.
+    Building intelligent pipelines and leading developer communities across UPES and beyond.
+  </p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="#contact" class="btn btn-outline">Get in touch</a>
+  </div>
+</section>
+
+<!-- ── About ── -->
+<section id="about">
+  <div class="reveal">
+    <p class="section-label">// 01 &mdash; about</p>
+    <h2 class="section-title">Who I Am</h2>
+    <div class="glow-line"></div>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>I'm a <em>B.Tech CSE student at UPES</em> (CGPA 9.2) pursuing a <em>Minor in AI from IIT Ropar</em>. I love building ML-based and NLP applications and leading technical initiatives.</p>
+      <p>Currently interning as an <em>AI/ML Developer at NetShield Technologies</em> — building automated news pipelines, NLP moderation frameworks, and LLM-integrated systems.</p>
+      <p>I hold leadership roles at <em>Google Developer Group</em>, <em>IEEE Computer Society</em>, and <em>Open Community</em> at UPES.</p>
+      <p>I speak <em>French, English, Telugu, Hindi, and Tamil</em> — and apparently Python too.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card">
+        <div class="stat-number">9.2</div>
+        <div class="stat-label">CGPA @ UPES</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">4+</div>
+        <div class="stat-label">Leadership Roles</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3+</div>
+        <div class="stat-label">AI / ML Projects</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Languages Spoken</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Experience ── -->
+<section id="experience">
+  <div class="reveal">
+    <p class="section-label">// 02 &mdash; experience</p>
+    <h2 class="section-title">Where I've Been</h2>
+    <div class="glow-line"></div>
+  </div>
+  <div class="timeline">
+
+    <div class="timeline-item reveal">
+      <div class="timeline-card">
+        <div class="tl-header">
+          <div>
+            <div class="tl-role">AI / ML Development Intern</div>
+            <div class="tl-company">NetShield Technologies</div>
+          </div>
+          <span class="tl-date">Dec 2025 – Present</span>
+        </div>
+        <ul class="tl-bullets">
+          <li>Building an end-to-end automated news pipeline with real-time ingestion and deduplication for downstream AI workflows.</li>
+          <li>Developed an NLP framework for sensitive content classification across multiple risk categories for scalable news processing.</li>
+          <li>Integrated LLMs to transform raw news into high-quality 2-minute scripts for a 24×7 AI-driven news production system.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="timeline-card">
+        <div class="tl-header">
+          <div>
+            <div class="tl-role">Technical Lead</div>
+            <div class="tl-company">Google Developer Group, UPES Chapter</div>
+          </div>
+          <span class="tl-date">Aug 2025 – Present</span>
+        </div>
+        <ul class="tl-bullets">
+          <li>Lead technical initiatives and projects for the student developer community.</li>
+          <li>Mentor peers in programming, AI, and emerging technologies.</li>
+          <li>Collaborate with industry professionals and faculty to deliver learning resources.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="timeline-card">
+        <div class="tl-header">
+          <div>
+            <div class="tl-role">Vice Chair</div>
+            <div class="tl-company">IEEE Computer Society, UPES Chapter</div>
+          </div>
+          <span class="tl-date">Jan 2026 – Present</span>
+        </div>
+        <ul class="tl-bullets">
+          <li>Organize workshops, hackathons, and speaker sessions on CS, AI, and emerging tech.</li>
+          <li>Coordinate with students, faculty, and industry professionals to strengthen the community.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="timeline-card">
+        <div class="tl-header">
+          <div>
+            <div class="tl-role">Technical Head</div>
+            <div class="tl-company">Open Community</div>
+          </div>
+          <span class="tl-date">Jan 2026 – Present</span>
+        </div>
+        <ul class="tl-bullets">
+          <li>Lead technical planning and execution of community projects in programming and AI/ML.</li>
+          <li>Conduct workshops and mentoring in Python, DSA, and emerging technologies.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="timeline-card">
+        <div class="tl-header">
+          <div>
+            <div class="tl-role">President, Hyderabad Club</div>
+            <div class="tl-company">Girl Up Irya — UN Foundation</div>
+          </div>
+          <span class="tl-date">Mar 2023 – Mar 2024</span>
+        </div>
+        <ul class="tl-bullets">
+          <li>Led a team of volunteers and built strategic partnerships with local organizations and schools.</li>
+          <li>Ran workshops and events raising awareness on gender-based issues and community change.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Projects ── -->
+<section id="projects">
+  <div class="reveal">
+    <p class="section-label">// 03 &mdash; projects</p>
+    <h2 class="section-title">What I've Built</h2>
+    <div class="glow-line"></div>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-icon">🫁</div>
+      <div class="project-name">CheXpert X-ray Classifier</div>
+      <span class="project-badge">ongoing</span>
+      <p class="project-desc">Deep learning models using DenseNet-121 and Vision Transformers for multi-label chest X-ray classification on CheXpert. Includes Grad-CAM explainability for clinical interpretability and advanced uncertainty label handling.</p>
+      <div class="project-tags">
+        <span class="tag">DenseNet-121</span>
+        <span class="tag">ViT</span>
+        <span class="tag">Grad-CAM</span>
+        <span class="tag">Deep Learning</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-icon">🎬</div>
+      <div class="project-name">CineMatch</div>
+      <span class="project-badge">NLP</span>
+      <p class="project-desc">NLP-powered content-based movie recommendation system using MovieLens data. Matrix-based similarity scoring for personalized recommendations with cold-start handling and interpretable AI methods.</p>
+      <div class="project-tags">
+        <span class="tag">NLP</span>
+        <span class="tag">Pandas</span>
+        <span class="tag">NumPy</span>
+        <span class="tag">Recommender</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-icon">🔍</div>
+      <div class="project-name">DetectifyML</div>
+      <span class="project-badge">ML</span>
+      <p class="project-desc">System to detect website technology stacks by analyzing 500+ websites. ML model identifying hidden tech using HTML structure, scripts, and metadata — going beyond surface-level detection.</p>
+      <div class="project-tags">
+        <span class="tag">Web Analysis</span>
+        <span class="tag">ML</span>
+        <span class="tag">Feature Extraction</span>
+        <span class="tag">Python</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Skills ── -->
+<section id="skills">
+  <div class="reveal">
+    <p class="section-label">// 04 &mdash; skills</p>
+    <h2 class="section-title">What I Know</h2>
+    <div class="glow-line"></div>
+  </div>
+  <div class="skills-grid reveal">
+    <div class="skills-category">
+      <h3>Languages</h3>
+      <div class="skills-tags">
+        <span class="skill-pill">Python</span>
+        <span class="skill-pill">C</span>
+      </div>
+    </div>
+    <div class="skills-category">
+      <h3>Core CS</h3>
+      <div class="skills-tags">
+        <span class="skill-pill">Data Structures</span>
+        <span class="skill-pill">Algorithms</span>
+        <span class="skill-pill">OOP</span>
+        <span class="skill-pill">DBMS</span>
+      </div>
+    </div>
+    <div class="skills-category">
+      <h3>AI / ML</h3>
+      <div class="skills-tags">
+        <span class="skill-pill">Machine Learning</span>
+        <span class="skill-pill">Deep Learning</span>
+        <span class="skill-pill">NLP</span>
+        <span class="skill-pill">LLMs</span>
+        <span class="skill-pill">Model Training</span>
+        <span class="skill-pill">Data Preprocessing</span>
+      </div>
+    </div>
+    <div class="skills-category">
+      <h3>Tools & Libraries</h3>
+      <div class="skills-tags">
+        <span class="skill-pill">NumPy</span>
+        <span class="skill-pill">Pandas</span>
+        <span class="skill-pill">Git</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Achievements ── -->
+<section id="achievements">
+  <div class="reveal">
+    <p class="section-label">// 05 &mdash; achievements</p>
+    <h2 class="section-title">Highlights</h2>
+    <div class="glow-line"></div>
+  </div>
+  <div class="achievements-grid">
+
+    <div class="ach-card reveal">
+      <div class="ach-icon">🏆</div>
+      <div>
+        <div class="ach-title">National Award — WAICY 2021</div>
+        <div class="ach-body">Winner in "AI for Social Good" category at the World Artificial Intelligence Competition for Youth, conducted by ReadyAI.</div>
+      </div>
+    </div>
+
+    <div class="ach-card reveal">
+      <div class="ach-icon">🥈</div>
+      <div>
+        <div class="ach-title">Top 5 Nationally — NIT Arunachal Pradesh</div>
+        <div class="ach-body">"New Inventions – Play Toys" national competition promoting the Made in India initiative.</div>
+      </div>
+    </div>
+
+    <div class="ach-card reveal">
+      <div class="ach-icon">📺</div>
+      <div>
+        <div class="ach-title">National Television Speaker</div>
+        <div class="ach-body">Selected among 60 students nationwide to deliver a speech broadcast for India's 75th Independence Day.</div>
+      </div>
+    </div>
+
+    <div class="ach-card reveal">
+      <div class="ach-icon">👑</div>
+      <div>
+        <div class="ach-title">Head Girl — Kennedy High</div>
+        <div class="ach-body">Served as Head Girl of Kennedy High the Global School during 12th grade.</div>
+      </div>
+    </div>
+
+    <div class="ach-card reveal">
+      <div class="ach-icon">📜</div>
+      <div>
+        <div class="ach-title">Certifications</div>
+        <div class="ach-body">Cyber Forensics & Cyber Law (International Forensics Science). GWC Summer Immersion — Morgan Stanley International Certificate (2 consecutive years).</div>
+      </div>
+    </div>
+
+    <div class="ach-card reveal">
+      <div class="ach-icon">🤝</div>
+      <div>
+        <div class="ach-title">NGO Volunteer</div>
+        <div class="ach-body">Delivered Cyber Security Awareness Sessions and Spoken English programs for NGOs across Hyderabad.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Contact ── -->
+<section id="contact">
+  <div class="reveal">
+    <p class="section-label">// 06 &mdash; contact</p>
+    <h2 class="section-title">Let's Connect</h2>
+    <div class="glow-line" style="margin:0 auto 3rem;"></div>
+  </div>
+  <div class="contact-wrap reveal">
+    <p>Whether you want to collaborate on an AI project, talk tech, or just say hi — my inbox is always open.</p>
+    <div class="contact-links">
+      <a href="mailto:divyasreenidhi@outlook.com" class="btn btn-primary">divyasreenidhi@outlook.com</a>
+      <a href="https://github.com/arigala-divya" class="btn btn-outline" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>designed &amp; built by <span>Arigala Divya Sreenidhi</span> &nbsp;·&nbsp; <span>2026</span></p>
+</footer>
+
+<script>
+// ════════════════════════════════════════
+//  PARTICLE SYSTEM
+// ════════════════════════════════════════
+const canvas = document.getElementById('particle-canvas');
+const ctx    = canvas.getContext('2d');
+let W, H;
+const mouse  = { x: -9999, y: -9999 };
+const TOTAL  = 130;
+const RADIUS = 110; // repel radius
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class P {
+  constructor(randomY) {
+    this.init(randomY);
+  }
+  init(randomY = false) {
+    this.x  = Math.random() * W;
+    this.y  = randomY ? Math.random() * H : -6;
+    this.r  = Math.random() * 1.8 + 0.4;
+    this.vx = (Math.random() - 0.5) * 0.35;
+    this.vy = Math.random() * 0.45 + 0.12;
+    this.a  = Math.random() * 0.55 + 0.15;
+    this.isPink = Math.random() > 0.55;
+    this.dying = false;
+    this.fade  = 1;
+  }
+  update() {
+    const dx   = this.x - mouse.x;
+    const dy   = this.y - mouse.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < RADIUS) {
+      const ang   = Math.atan2(dy, dx);
+      const force = (RADIUS - dist) / RADIUS;
+      this.vx += Math.cos(ang) * force * 2.8;
+      this.vy += Math.sin(ang) * force * 2.8;
+      this.dying = true;
+    }
+    if (this.dying) {
+      this.fade -= 0.035;
+      if (this.fade <= 0) this.init(false);
+    } else {
+      this.x  += this.vx;
+      this.y  += this.vy;
+      this.vx *= 0.98;
+      this.vy *= 0.98;
+      if (this.y > H + 8) this.init(false);
+      if (this.x < -8 || this.x > W + 8) this.init(false);
+    }
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.dying ? this.a * this.fade : this.a;
+    ctx.fillStyle   = this.isPink
+      ? `rgba(236,72,153,1)`
+      : `rgba(139,92,246,1)`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+const particles = Array.from({ length: TOTAL }, () => new P(true));
+
+(function loop() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(loop);
+})();
+
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+window.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
+
+// ════════════════════════════════════════
+//  TYPED HERO TEXT
+// ════════════════════════════════════════
+const ROLES = [
+  'AI/ML Developer',
+  'CS Undergrad @ UPES',
+  'Minor in AI — IIT Ropar',
+  'Technical Lead @ GDG',
+  'NLP Enthusiast',
+  'Deep Learning Explorer',
+  'Vice Chair @ IEEE CS',
+];
+let ri = 0, ci = 0, del = false;
+const el = document.querySelector('.txt');
+
+function type() {
+  const word = ROLES[ri];
+  if (!del) {
+    el.textContent = word.slice(0, ++ci);
+    if (ci === word.length) { setTimeout(() => { del = true; type(); }, 1900); return; }
+    setTimeout(type, 75);
+  } else {
+    el.textContent = word.slice(0, --ci);
+    if (ci === 0) {
+      del = false;
+      ri  = (ri + 1) % ROLES.length;
+      setTimeout(type, 350);
+      return;
+    }
+    setTimeout(type, 38);
+  }
+}
+type();
+
+// ════════════════════════════════════════
+//  SCROLL REVEAL
+// ════════════════════════════════════════
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 90);
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+revealEls.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
