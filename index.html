@@ -363,9 +363,11 @@
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 2rem;
-      transition: all 0.4s;
+      transition: border-color 0.4s, box-shadow 0.4s, opacity 0.4s;
       position: relative;
       overflow: hidden;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
     .project-card::after {
       content: '';
@@ -378,7 +380,6 @@
     }
     .project-card:hover {
       border-color: rgba(139,92,246,0.5);
-      transform: translateY(-7px);
       box-shadow: 0 24px 48px rgba(139,92,246,0.14);
     }
     .project-card:hover::after { opacity: 1; }
@@ -530,6 +531,50 @@
       50%      { opacity:0; }
     }
 
+    /* ── Spotlight ── */
+    #spotlight {
+      position: fixed;
+      width: 650px; height: 650px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,92,246,0.09) 0%, rgba(236,72,153,0.04) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      top: 0; left: 0;
+      transform: translate(-9999px, -9999px);
+      will-change: transform;
+    }
+
+    /* ── Timeline progress ── */
+    .tl-progress {
+      height: 2px;
+      background: rgba(139,92,246,0.12);
+      border-radius: 2px;
+      margin-top: 1.2rem;
+      overflow: hidden;
+    }
+    .tl-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      border-radius: 2px;
+      transition: width 1.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .timeline-item.visible .tl-fill { width: 100%; }
+
+    /* ── Glitch ── */
+    @keyframes glitch-clip {
+      0%   { clip-path: inset(40% 0 60% 0); transform: translate(-4px, 0); }
+      20%  { clip-path: inset(20% 0 50% 0); transform: translate(4px, 0); }
+      40%  { clip-path: inset(60% 0 10% 0); transform: translate(-2px, 0); }
+      60%  { clip-path: inset(10% 0 70% 0); transform: translate(3px, 0); }
+      80%  { clip-path: inset(50% 0 30% 0); transform: translate(-3px, 0); }
+      100% { clip-path: inset(0% 0 0% 0);   transform: translate(0, 0); }
+    }
+    .hero-name.glitching .gline {
+      animation: glitch-clip 0.08s steps(1) infinite;
+      color: var(--pink);
+    }
+
     /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
@@ -552,6 +597,7 @@
 <body>
 
 <canvas id="particle-canvas"></canvas>
+<div id="spotlight"></div>
 
 <!-- ── Nav ── -->
 <nav>
@@ -569,7 +615,7 @@
 <!-- ── Hero ── -->
 <section id="hero">
   <p class="hero-tag">// hello world, I'm</p>
-  <h1 class="hero-name">Arigala Divya<br/>Sreenidhi</h1>
+  <h1 class="hero-name"><span class="gline">Arigala Divya</span><br/><span class="gline">Sreenidhi</span></h1>
   <p class="hero-typed">&gt;&nbsp;<span class="txt"></span><span class="cur"></span></p>
   <p class="hero-desc">
     CS undergrad with strong foundations in <em>Data Structures</em>, <em>Machine Learning</em>, and <em>AI systems</em>.
@@ -597,19 +643,19 @@
     </div>
     <div class="about-stats">
       <div class="stat-card">
-        <div class="stat-number">9.2</div>
+        <div class="stat-number" data-target="9.2" data-dec="1" data-suffix="">9.2</div>
         <div class="stat-label">CGPA @ UPES</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">4+</div>
+        <div class="stat-number" data-target="4" data-dec="0" data-suffix="+">4+</div>
         <div class="stat-label">Leadership Roles</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">3+</div>
+        <div class="stat-number" data-target="3" data-dec="0" data-suffix="+">3+</div>
         <div class="stat-label">AI / ML Projects</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">5</div>
+        <div class="stat-number" data-target="5" data-dec="0" data-suffix="">5</div>
         <div class="stat-label">Languages Spoken</div>
       </div>
     </div>
@@ -639,6 +685,7 @@
           <li>Developed an NLP framework for sensitive content classification across multiple risk categories for scalable news processing.</li>
           <li>Integrated LLMs to transform raw news into high-quality 2-minute scripts for a 24×7 AI-driven news production system.</li>
         </ul>
+        <div class="tl-progress"><div class="tl-fill"></div></div>
       </div>
     </div>
 
@@ -656,6 +703,7 @@
           <li>Mentor peers in programming, AI, and emerging technologies.</li>
           <li>Collaborate with industry professionals and faculty to deliver learning resources.</li>
         </ul>
+        <div class="tl-progress"><div class="tl-fill"></div></div>
       </div>
     </div>
 
@@ -672,6 +720,7 @@
           <li>Organize workshops, hackathons, and speaker sessions on CS, AI, and emerging tech.</li>
           <li>Coordinate with students, faculty, and industry professionals to strengthen the community.</li>
         </ul>
+        <div class="tl-progress"><div class="tl-fill"></div></div>
       </div>
     </div>
 
@@ -688,6 +737,7 @@
           <li>Lead technical planning and execution of community projects in programming and AI/ML.</li>
           <li>Conduct workshops and mentoring in Python, DSA, and emerging technologies.</li>
         </ul>
+        <div class="tl-progress"><div class="tl-fill"></div></div>
       </div>
     </div>
 
@@ -704,6 +754,7 @@
           <li>Led a team of volunteers and built strategic partnerships with local organizations and schools.</li>
           <li>Ran workshops and events raising awareness on gender-based issues and community change.</li>
         </ul>
+        <div class="tl-progress"><div class="tl-fill"></div></div>
       </div>
     </div>
 
@@ -1014,6 +1065,100 @@ const io = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.08 });
 revealEls.forEach(el => io.observe(el));
+
+// ════════════════════════════════════════
+//  CURSOR SPOTLIGHT
+// ════════════════════════════════════════
+const spotlight = document.getElementById('spotlight');
+window.addEventListener('mousemove', e => {
+  spotlight.style.transform = `translate(${e.clientX - 325}px, ${e.clientY - 325}px)`;
+});
+window.addEventListener('mouseleave', () => {
+  spotlight.style.transform = 'translate(-9999px, -9999px)';
+});
+
+// ════════════════════════════════════════
+//  GLITCH HERO NAME
+// ════════════════════════════════════════
+const GLITCH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%<>/\\|!?';
+function glitchLine(span) {
+  const original = span.textContent;
+  let iter = 0;
+  const total = original.length * 4;
+  const iv = setInterval(() => {
+    span.textContent = original.split('').map((ch, i) => {
+      if (ch === ' ') return ' ';
+      if (i < Math.floor(iter / 4)) return ch;
+      return GLITCH[Math.floor(Math.random() * GLITCH.length)];
+    }).join('');
+    iter++;
+    if (iter >= total) {
+      span.textContent = original;
+      clearInterval(iv);
+    }
+  }, 28);
+}
+function runGlitch() {
+  document.querySelectorAll('.gline').forEach((span, i) => {
+    setTimeout(() => glitchLine(span), i * 120);
+  });
+}
+// On load (after initial fade-in animation settles)
+setTimeout(runGlitch, 1400);
+
+// Re-trigger when hero scrolls back into view
+const heroObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) runGlitch();
+  });
+}, { threshold: 0.6 });
+heroObs.observe(document.getElementById('hero'));
+
+// ════════════════════════════════════════
+//  PROJECT CARD 3D TILT
+// ════════════════════════════════════════
+document.querySelectorAll('.project-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r   = card.getBoundingClientRect();
+    const dx  = (e.clientX - r.left  - r.width  / 2) / (r.width  / 2);
+    const dy  = (e.clientY - r.top   - r.height / 2) / (r.height / 2);
+    card.style.transition = 'border-color 0.4s, box-shadow 0.4s';
+    card.style.transform  = `perspective(700px) rotateY(${dx * 9}deg) rotateX(${-dy * 9}deg) translateY(-8px) scale(1.01)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transition = 'transform 0.5s ease, border-color 0.4s, box-shadow 0.4s';
+    card.style.transform  = '';
+  });
+});
+
+// ════════════════════════════════════════
+//  STAT COUNTER ANIMATION
+// ════════════════════════════════════════
+function animateCounter(el) {
+  const target   = parseFloat(el.dataset.target);
+  const dec      = parseInt(el.dataset.dec  || '0');
+  const suffix   = el.dataset.suffix || '';
+  const duration = 1600;
+  const start    = performance.now();
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = target * eased;
+    el.textContent = (dec > 0 ? val.toFixed(dec) : Math.floor(val)) + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const statObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const num = entry.target.querySelector('.stat-number[data-target]');
+      if (num) animateCounter(num);
+      statObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-card').forEach(c => statObs.observe(c));
 </script>
 </body>
 </html>
