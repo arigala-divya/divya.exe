@@ -1082,10 +1082,12 @@ window.addEventListener('mouseleave', () => {
 // ════════════════════════════════════════
 const GLITCH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%<>/\\|!?';
 function glitchLine(span) {
-  const original = span.textContent;
+  if (!span.dataset.original) span.dataset.original = span.textContent;
+  const original = span.dataset.original;
+  if (span._glitchIv) clearInterval(span._glitchIv);
   let iter = 0;
   const total = original.length * 4;
-  const iv = setInterval(() => {
+  span._glitchIv = setInterval(() => {
     span.textContent = original.split('').map((ch, i) => {
       if (ch === ' ') return ' ';
       if (i < Math.floor(iter / 4)) return ch;
@@ -1094,7 +1096,8 @@ function glitchLine(span) {
     iter++;
     if (iter >= total) {
       span.textContent = original;
-      clearInterval(iv);
+      clearInterval(span._glitchIv);
+      span._glitchIv = null;
     }
   }, 28);
 }
